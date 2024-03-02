@@ -7,7 +7,7 @@ const users = new mongoose.Schema({
   email: String,
   phone: String,
   address: String,
-  userType: String,
+  role: String,
 });
 
 const Users = mongoose.model("Users", users);

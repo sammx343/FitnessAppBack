@@ -5,6 +5,7 @@ const businesses = new mongoose.Schema({
   address: String,
   email: String,
   description: String,
+  userId: String,
 });
 
 const Businesses = mongoose.model("Businesses", businesses);

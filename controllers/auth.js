@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const { checkMissingParams } = require("../utils");
 
 exports.postSignUp = async (req, res, next) => {
-  const { firstName, lastName, password, email, phone, address, userType } =
+  const { firstName, lastName, password, email, phone, address, role } =
     req.body;
 
   const params = [
@@ -13,7 +13,7 @@ exports.postSignUp = async (req, res, next) => {
     "email",
     "phone",
     "address",
-    "userType",
+    "role",
   ];
 
   try {
@@ -30,7 +30,7 @@ exports.postSignUp = async (req, res, next) => {
       email,
       phone,
       address,
-      userType,
+      role,
     });
 
     const condition = { email };
@@ -42,8 +42,8 @@ exports.postSignUp = async (req, res, next) => {
       });
     }
 
-    const result = await user.save();
-    return res.status(201).json({ message: "Data inserted successfully" });
+    const savedUser = await user.save();
+    return res.status(201).json({ user: savedUser });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
