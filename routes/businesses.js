@@ -1,5 +1,4 @@
 const express = require("express");
-const BusinessModel = require("../models/businesses");
 const router = express.Router();
 const businessController = require("../controllers/businesses");
 

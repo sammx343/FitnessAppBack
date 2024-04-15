@@ -30,9 +30,9 @@ exports.getBusinesses = async (req, res, next) => {
 exports.createBusiness = async (req, res, next) => {
   try {
     const { name, address, email, description, userId } = req.body;
-    const params = ["name", "email", "description", "userId"];
+    const requiredParams = ["name", "email", "description", "userId"];
 
-    const missingParamsError = checkMissingParams(req, res, params);
+    const missingParamsError = checkMissingParams(req, res, requiredParams);
     if (missingParamsError) {
       return missingParamsError;
     }
@@ -60,5 +60,3 @@ exports.createBusiness = async (req, res, next) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-exports.getByu;
