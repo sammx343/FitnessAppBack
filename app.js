@@ -5,6 +5,8 @@ const connectToDatabase = require("./database");
 const app = express();
 const port = 3000;
 
+console.log(new Date());
+
 // CORS headers middleware
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
