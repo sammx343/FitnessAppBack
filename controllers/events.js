@@ -14,16 +14,16 @@ exports.createEvent = async (req, res, next) => {
         }
 
         const business = await BusinessModel.findById(businessId);
-        if(!business){
+        if (!business) {
             return res.status(400).json({ error: "Business with id " + businessId + " was not found." });
         }
-        
+
         const user = await UserModel.findById(userId);
-        if(!user){
+        if (!user) {
             return res.status(400).json({ error: "User with id " + userId + " was not found." });
         }
 
-        const event = new EventsModel({ name, description, startHour, endHour, place, isWeekly, userId, businessId});
+        const event = new EventsModel({ name, description, startHour, endHour, place, isWeekly, userId, businessId });
 
         await event.save();
         return res.status(201).json({ message: "Data inserted successfully" });
@@ -31,5 +31,16 @@ exports.createEvent = async (req, res, next) => {
         console.error("Error adding event:", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
-
 };
+
+exports.getEventsByBusinessId = async (req, res, next) => {
+    try {
+        const { id } = req.query;
+        console.log(id)
+        const events = await EventsModel.find({ businessId: id });
+        return res.status(201).json({ events });
+    } catch (error) {
+        console.error("Error getting event:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
