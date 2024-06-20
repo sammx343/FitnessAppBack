@@ -21,6 +21,7 @@ const events = new mongoose.Schema({
       message: 'Date is not valid',
     }
   },
+  createdAt: Date,
   place: String,
   isWeekly: Boolean,
   userId: String,

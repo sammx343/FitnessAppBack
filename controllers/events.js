@@ -23,7 +23,7 @@ exports.createEvent = async (req, res, next) => {
             return res.status(400).json({ error: "User with id " + userId + " was not found." });
         }
 
-        const event = new EventsModel({ name, description, startHour, endHour, place, isWeekly, userId, businessId });
+        const event = new EventsModel({ name, description, startHour, endHour, place, isWeekly, userId, businessId, createdAt: new Date() });
 
         await event.save();
         return res.status(201).json({ message: "Data inserted successfully" });
@@ -35,12 +35,37 @@ exports.createEvent = async (req, res, next) => {
 
 exports.getEventsByBusinessId = async (req, res, next) => {
     try {
+        const { id, startDate, endDate } = req.query;
+        const events = await EventsModel.find({
+            businessId: id, startHour: {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            },
+            isWeekly: false,
+        });
+        const weekly = await getWeeklyEvents(id);
+        console.log(weekly);
+        return res.status(201).json({events: [...events, ...weekly] });
+    } catch (error) {
+        console.error("Error getting event:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+}
+
+exports.getWeeklyEvents = async (req, res ) => {
+    try {
         const { id } = req.query;
-        console.log(id)
-        const events = await EventsModel.find({ businessId: id });
+        const events = getWeeklyEvents(id)
         return res.status(201).json({ events });
     } catch (error) {
         console.error("Error getting event:", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
+} 
+
+const getWeeklyEvents = async (idBusiness) => {
+    const events = await EventsModel.find({
+        businessId: idBusiness, isWeekly: true
+    });
+    return events;
 }
