@@ -43,13 +43,12 @@ exports.editEvent = async (req, res, next) => {
         if (missingParamsError) {
             return missingParamsError;
         }
-        console.log("event id");
-        console.log(eventId)
+        
         const event = await EventsModel.findByIdAndUpdate(eventId,
             { $set: { name, description, startHour, endHour, place, isWeekly, userId, businessId } },
             { new: true, runValidators: true }
         );
-        console.log(event)
+        
         if (!event) {
             return res.status(400).json({ error: "Event with id " + eventId + " was not found." });
         }
@@ -57,7 +56,22 @@ exports.editEvent = async (req, res, next) => {
         await event.save();
         return res.status(201).json({ message: "Event edited successfully" });
     } catch (error) {
-        console.error("Error adding event:", error);
+        console.error("Error editing event: ", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+exports.deleteEvent = async (req, res, next ) => {
+    try{
+        const { id: eventId } = req.params;
+        const event = await EventsModel.findByIdAndDelete(eventId);
+
+        if (!event) {
+            return res.status(400).json({ error: "Event with id " + eventId + " was not found and couldn't be deleted." });
+        }
+        return res.status(201).json({ message: "Event deleted successfully" });
+    }catch(e){
+        console.error("Error deleting event: ", e);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 };
@@ -72,11 +86,13 @@ exports.getEventsByBusinessId = async (req, res, next) => {
             },
             isWeekly: false,
         });
+        console.log("events");
+        console.log(events);
         const weekly = await getWeeklyEvents(id);
 
         return res.status(201).json({ events: [...events, ...weekly] });
     } catch (error) {
-        console.error("Error getting event:", error);
+        console.error("Error getting event: ", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
@@ -87,7 +103,7 @@ exports.getWeeklyEvents = async (req, res) => {
         const events = getWeeklyEvents(id)
         return res.status(201).json({ events });
     } catch (error) {
-        console.error("Error getting event:", error);
+        console.error("Error getting event: ", error);
         return res.status(500).json({ error: "Internal Server Error" });
     }
 }
