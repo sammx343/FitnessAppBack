@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const StudentsModel = require("../models/students");
+const userBusinessController = require("../controllers/userBusiness");
+const UserBusiness = require("../models/userBusiness");
 
 router.get("/", async (req, res) => {
   try {
@@ -10,6 +12,20 @@ router.get("/", async (req, res) => {
   } catch (e) {
     // Handle other errors and respond with a 500 Internal Server Error
     console.error("Error fetching document:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/role", async (req, res) => {
+  try{
+    const { userId, businessId } = req.query;
+    console.log(userId, businessId);
+    const role = await UserBusiness.findOne({ userId, businessId });
+
+    console.log("Data fetched successfully:", role);
+    res.status(201).json(role);
+  }catch(error){
+    console.error("Error fetching user role: ", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

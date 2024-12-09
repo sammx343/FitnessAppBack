@@ -43,8 +43,7 @@ exports.editEvent = async (req, res, next) => {
         if (missingParamsError) {
             return missingParamsError;
         }
-        console.log("event id");
-        console.log(eventId)
+        
         const event = await EventsModel.findByIdAndUpdate(eventId,
             { $set: { name, description, startHour, endHour, place, isWeekly, userId, businessId } },
             { new: true, runValidators: true }

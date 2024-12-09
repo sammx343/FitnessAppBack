@@ -1,4 +1,5 @@
 const BusinessModel = require("../models/businesses");
+const userBusinessController = require("../controllers/userBusiness");
 const { checkMissingParams } = require("../utils");
 
 exports.getBusinessById = async (req, res, next) => {
@@ -38,7 +39,7 @@ exports.createBusiness = async (req, res, next) => {
     }
 
     const existingBusiness = await BusinessModel.findOne({
-      name: { $regex: new RegExp(name, "i") },
+      name: { $regex: new RegExp(name, "i")},
     });
 
     if (existingBusiness) {
@@ -53,7 +54,10 @@ exports.createBusiness = async (req, res, next) => {
       userId,
     });
 
-    await business.save();
+    const newBusiness = await business.save();
+
+    userBusinessController.createUserBusiness(userId, newBusiness._id.toString(), 'owner');
+
     return res.status(201).json({ message: "Data inserted successfully" });
   } catch (error) {
     console.error("Error adding business:", error);
