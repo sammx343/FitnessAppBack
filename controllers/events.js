@@ -5,7 +5,7 @@ const { checkMissingParams } = require("../utils");
 
 exports.createEvent = async (req, res, next) => {
     try {
-        const { name, description, startHour, endHour, place, isWeekly, userId, businessId } = req.body;
+        let { name, description, startHour, endHour, place, isWeekly, userId, businessId, openToAll, maxCapacity } = req.body;
         const requiredParams = ["name", "startHour", "endHour", "place", "userId", "businessId"];
 
         const missingParamsError = checkMissingParams(req, res, requiredParams);
@@ -23,7 +23,11 @@ exports.createEvent = async (req, res, next) => {
             return res.status(400).json({ error: "User with id " + userId + " was not found." });
         }
 
-        const event = new EventsModel({ name, description, startHour, endHour, place, isWeekly, userId, businessId, createdAt: new Date() });
+        if(!maxCapacity){
+            maxCapacity = Infinity;
+        }
+
+        const event = new EventsModel({ name, description, startHour, endHour, place, isWeekly, userId, businessId, openToAll, maxCapacity, createdAt: new Date() });
 
         await event.save();
         return res.status(201).json({ message: "Data inserted successfully" });
@@ -35,7 +39,7 @@ exports.createEvent = async (req, res, next) => {
 
 exports.editEvent = async (req, res, next) => {
     try {
-        const { name, description, startHour, endHour, place, isWeekly, userId, businessId } = req.body;
+        let { name, description, startHour, endHour, place, isWeekly, userId, businessId, openToAll, maxCapacity } = req.body;
         const { id: eventId } = req.params;
         const requiredParams = ["name", "startHour", "endHour", "place", "userId", "businessId"];
 
@@ -44,8 +48,12 @@ exports.editEvent = async (req, res, next) => {
             return missingParamsError;
         }
         
+        if(!maxCapacity){
+            maxCapacity = Infinity;
+        }
+
         const event = await EventsModel.findByIdAndUpdate(eventId,
-            { $set: { name, description, startHour, endHour, place, isWeekly, userId, businessId } },
+            { $set: { name, description, startHour, endHour, place, isWeekly, userId, businessId, openToAll, maxCapacity } },
             { new: true, runValidators: true }
         );
         

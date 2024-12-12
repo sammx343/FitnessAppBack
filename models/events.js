@@ -26,6 +26,8 @@ const events = new mongoose.Schema({
   isWeekly: Boolean,
   userId: String,
   businessId: String,
+  maxCapacity: Number,
+  openToAll: Boolean
 });
 
 const dateValidator = (value) => {
