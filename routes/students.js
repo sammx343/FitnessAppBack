@@ -20,7 +20,7 @@ router.get("/role", async (req, res) => {
   try{
     const { userId, businessId } = req.query;
     console.log(userId, businessId);
-    const role = await UserBusiness.findOne({ userId, businessId });
+    const role = await UserBusiness.findOne({ userId, businessId }) || 'unsuscribed';
 
     console.log("Data fetched successfully:", role);
     res.status(201).json(role);
