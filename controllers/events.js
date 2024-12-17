@@ -94,8 +94,6 @@ exports.getEventsByBusinessId = async (req, res, next) => {
             },
             isWeekly: false,
         });
-        console.log("events");
-        console.log(events);
         const weekly = await getWeeklyEvents(id);
 
         return res.status(201).json({ events: [...events, ...weekly] });
